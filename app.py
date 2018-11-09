@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, \
     jsonify, url_for, flash
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, User, Category, Item
+from models import Base, User, Category, Item
 from flask import session as login_session
 import random
 import string
@@ -25,6 +25,17 @@ Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
+
+# Create anti-forgery state token
+@app.route('/login')
+def showLogin():
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                    for x in range(32))
+    login_session['state'] = state
+    # return "The current session state is %s" % login_session['state']
+    return render_template('login.html', STATE=state)
+
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
