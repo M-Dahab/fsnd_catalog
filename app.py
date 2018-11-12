@@ -182,6 +182,21 @@ def gdisconnect():
         return response
 
 
+# Show all categories
+@app.route('/')
+@app.route('/categories/')
+def showCategories():
+    print(login_session)
+    categories = session.query(Category).order_by(asc(Category.name))
+    if 'username' not in login_session:
+        return render_template(
+          'publiccategories.html',
+          categories=categories,
+        )
+    else:
+        return render_template('categories.html', categories=categories)
+
+
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
