@@ -222,6 +222,30 @@ def showItems(category_id):
         )
 
 
+# Show category item
+@app.route('/categories/<int:category_id>/items/<int:item_id>')
+def showItem(category_id, item_id):
+    category = session.query(Category).filter_by(id=category_id).one()
+    creator = getUserInfo(Category.user_id)
+    item = session.query(Item).filter_by(
+        category_id=category_id, id=item_id).one()
+    if 'username' not in login_session or \
+            creator.id != login_session['user_id']:
+        return render_template(
+          'publicitem.html',
+          item=item,
+          category=category,
+          creator=creator,
+        )
+    else:
+        return render_template(
+          'item.html',
+          item=item,
+          category=category,
+          creator=creator,
+        )
+
+
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
