@@ -246,6 +246,22 @@ def showItem(category_id, item_id):
         )
 
 
+# Create a new category
+@app.route('/categories/new/', methods=['GET', 'POST'])
+def newCategory():
+    if 'username' not in login_session:
+        return redirect('/login')
+    if request.method == 'POST':
+        newCategory = Category(
+            name=request.form['name'], user_id=login_session['user_id'])
+        session.add(newCategory)
+        flash('New Category "%s" Successfully Created' % newCategory.name)
+        session.commit()
+        return redirect(url_for('showCategories'))
+    else:
+        return render_template('newcategory.html')
+
+
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
