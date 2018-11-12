@@ -331,6 +331,39 @@ def editItem(category_id, item_id):
         )
 
 
+# Delete a category item
+@app.route(
+    '/categories/<int:category_id>/items/<int:item_id>/delete/',
+    methods=['GET', 'POST'],
+)
+def deleteItem(category_id, item_id):
+    if 'username' not in login_session:
+        return redirect('/login')
+    itemToDelete = session.query(
+        Item).filter_by(id=item_id, category_id=category_id).one()
+    if itemToDelete.user_id != login_session['user_id']:
+        return '''
+          <script>
+            function myFunction() {
+              alert('You are not authorized to delete this item.
+              Please create your own item in order to delete.');
+            }
+          </script><body onload='myFunction()'>
+        '''
+    if request.method == 'POST':
+        session.delete(itemToDelete)
+        flash('%s Successfully Deleted' % itemToDelete.name)
+        session.commit()
+        return redirect(
+          url_for('showItems', category_id=category_id),
+        )
+    else:
+        return render_template(
+          'deleteitem.html',
+          item=itemToDelete,
+        )
+
+
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
