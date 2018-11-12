@@ -223,7 +223,7 @@ def showItems(category_id):
 
 
 # Show category item
-@app.route('/categories/<int:category_id>/items/<int:item_id>')
+@app.route('/categories/<int:category_id>/items/<int:item_id>/')
 def showItem(category_id, item_id):
     category = session.query(Category).filter_by(id=category_id).one()
     creator = getUserInfo(Category.user_id)
@@ -376,6 +376,20 @@ def disconnect():
         flash("You were not logged in")
 
     return redirect(url_for('showCategories'))
+
+
+# JSON endpoints.
+
+@app.route('/categories/<int:category_id>/items/<int:item_id>/JSON/')
+def categoryItemJSON(category_id, item_id):
+    item = session.query(Item).filter_by(id=item_id).one()
+    return jsonify(item=item.serialize)
+
+
+@app.route('/categories/JSON/')
+def categoriesJSON():
+    categories = session.query(Category).all()
+    return jsonify(categories=[c.serialize for c in categories])
 
 
 if __name__ == '__main__':
