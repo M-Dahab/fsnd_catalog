@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	</head>
+	<body>
+        <div class="container text-right p-4">
+            <a href="{{ url_for('showLogin') }}">
+                <button class="btn btn-default">
+                    Login
+                </button>
+            </a>
+            <a href="{{ url_for('disconnect') }}">
+                <button class="btn btn-default">
+                    Logout
+                </button>
+            </a>
+        </div>
+		<div class="container">
+			{% block content %}
+			{% endblock %}
+		</div>
+	</body>
+</html>
