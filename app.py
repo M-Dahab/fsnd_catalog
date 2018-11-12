@@ -299,6 +299,38 @@ def newItem(category_id):
         return render_template('newitem.html', category=category)
 
 
+# Edit an item
+@app.route(
+  '/categories/<int:category_id>/items/<int:item_id>/edit/',
+  methods=['GET', 'POST'],
+)
+def editItem(category_id, item_id):
+    if 'username' not in login_session:
+        return redirect('/login')
+    editedItem = session.query(
+        Item).filter_by(id=item_id, category_id=category_id).one()
+    if editedItem.user_id != login_session['user_id']:
+        return '''
+          <script>
+            function myFunction() {
+              alert('You are not authorized to edit this item.
+              Please create your own item in order to edit.');
+            }
+          </script><body onload='myFunction()'>
+        '''
+    if request.method == 'POST':
+        if request.form['name'] and request.form['description']:
+            editedItem.name = request.form['name']
+            editedItem.description = request.form['description']
+            flash('Item Successfully Updated.')
+            return redirect(url_for('showItems', category_id=category_id))
+    else:
+        return render_template(
+          'editItem.html',
+          item=editedItem,
+        )
+
+
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
