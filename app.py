@@ -364,6 +364,20 @@ def deleteItem(category_id, item_id):
         )
 
 
+# Logout
+@app.route('/disconnect')
+def disconnect():
+    print(login_session)
+    if 'provider' in login_session:
+        gdisconnect()
+        login_session.clear()
+        flash("Logged out successfully.")
+    else:
+        flash("You were not logged in")
+
+    return redirect(url_for('showCategories'))
+
+
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
